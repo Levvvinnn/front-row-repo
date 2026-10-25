@@ -13,6 +13,8 @@ Commands:
   list   --course C [--short] [--json]           the running list (--short: night-before list)
   pdf    --course C --exam NAME --out FILE [--checks FILE]
   call   --course C --exam NAME [--time "10 AM"] what to say on the exam-morning wake-up call
+  export --course C --out FILE.md [--date D] [--transcript FILE] [--exam NAME]
+                                                 Markdown notes to save or paste into any AI model
   courses                                        classes with saved hints
 
 Every command takes --sample, which uses the bundled files under assets/ and leaves saved hints alone.
@@ -504,6 +506,74 @@ def call_script(store: dict, exam: str, time: str | None) -> str:
     return " ".join(parts)
 
 
+# ---------------------------------------------------------------- export
+
+
+def export_markdown(store: dict, exam: str | None, date: str | None, transcript: str | None) -> str:
+    """A Markdown file the student can save or paste into any AI model: context, hints, sources, prompts."""
+    hints = [h for h in store["hints"] if not date or h["date"] == date]
+    if not hints:
+        fail(f"No hints saved for {store['course']}{' on ' + date if date else ''}.", 3)
+    view = {**store, "hints": hints}
+    groups = grouped(view)
+    dates = sorted({h["date"] for h in hints})
+    rated = [g for g in groups if g["rank"] != "skip"]
+    scope = f"the {date} lecture" if date else f"{len(dates)} lecture{'s' if len(dates) != 1 else ''} ({dates[0]} to {dates[-1]})"
+    if len(dates) == 1 and not date:
+        scope = f"1 lecture ({dates[0]})"
+
+    out = [f"# {store['course']}: Front Row lecture notes", ""]
+    out.append(f"{len(rated)} exam hints from {scope}"
+               f"{f', for the {exam}' if exam else ''}, caught by Front Row from my own lecture recordings.")
+    out += ["", "## How to use this file", "",
+            "Paste or upload it into ChatGPT, Claude, Gemini or any AI model, then try:", "",
+            "- Quiz me on the Direct hints, one question at a time, and wait for my answer.",
+            "- Make a one-page study guide from these hints, Direct first.",
+            "- Explain each hint marked \"only said in lecture\" like I missed that class.",
+            "- Write practice problems in the style the professor described.", "",
+            "## What the labels mean", "",
+            "- **Direct**: the professor said it will be on the exam, or \"you need to know this\".",
+            "- **Strong**: \"this is important\", \"write this down\", \"people always get this wrong\".",
+            "- **Repeated**: the professor came back to it 3 or more times in one lecture.",
+            "- **In the slides** / **Only said in lecture** / **Not checked**: whether it was found in the course "
+            "materials. Not checked means the slides weren't searched, not that it's missing.", "",
+            "These are what the professor said, not a promise of what's on the exam.", ""]
+
+    for rank in ("direct", "strong", "repeated"):
+        items = [g for g in groups if g["rank"] == rank]
+        if not items:
+            continue
+        out += [f"## {rank.capitalize()}", ""]
+        for g in items:
+            out.append(f"### {g['concept']}")
+            out.append("")
+            for h in sorted((h for h in hints if h["concept"].casefold() == g["concept"].casefold()), key=lambda h: h["date"]):
+                minute = f", minute {h['minute']}" if h.get("minute") not in (None, "") else ""
+                said = f": \"{h['quote']}\"" if h.get("quote") else ""
+                out.append(f"- {h['date']}{minute}{said}")
+            if g["status"] == "slides":
+                spot = g.get("link") or g.get("material")
+                out.append(f"- In the slides{f': {spot}' if spot else ''}")
+            else:
+                out.append(f"- {'Only said in lecture' if g['status'] == 'only_lecture' else 'Not checked against the slides'}")
+            out.append("")
+
+    skips = [g for g in groups if g["rank"] == "skip"]
+    if skips:
+        out += ["## Said NOT on the exam", ""] + [f"- {g['concept']}" for g in skips] + [""]
+
+    if len(dates) > 1:
+        out += ["## By lecture", ""]
+        for d in dates:
+            names = [f"{h['concept']} ({h['rank']})" for h in hints if h["date"] == d]
+            out.append(f"- **{d}**: {', '.join(names)}")
+        out.append("")
+
+    if transcript:
+        out += ["## Transcript", "", transcript.strip(), ""]
+    return "\n".join(out)
+
+
 # ---------------------------------------------------------------- main
 
 
@@ -554,6 +624,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--time", help='exam start time as the student would say it, for example "10 AM"')
     p.add_argument("--sample", action="store_true")
 
+    p = sub.add_parser("export", help="Markdown file of the hints, ready for any AI model")
+    p.add_argument("--course")
+    p.add_argument("--exam", help="exam name to put in the header")
+    p.add_argument("--date", help="only this lecture, YYYY-MM-DD")
+    p.add_argument("--transcript", type=Path, help="append this lecture's transcript (use with --date)")
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--sample", action="store_true")
+
     sub.add_parser("courses", help="classes with saved hints")
 
     args = parser.parse_args(argv)
@@ -598,7 +676,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Saved {added} new and {replaced} updated hint(s) for {store['course']} ({args.date}). "
               f"{len(store['hints'])} saved in all.")
 
-    elif args.command in {"list", "pdf", "call"}:
+    elif args.command in {"list", "pdf", "call", "export"}:
         if args.sample:
             store = sample_store()
         else:
@@ -611,6 +689,12 @@ def main(argv: list[str] | None = None) -> int:
             emit(json.dumps(grouped(store), indent=1, ensure_ascii=False) if args.json else format_list(store, args.short))
         elif args.command == "call":
             print(call_script(store, args.exam, args.time))
+        elif args.command == "export":
+            path = args.transcript or (SAMPLE_TRANSCRIPT if args.sample else None)
+            transcript = read_text(path) if path else None
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(export_markdown(store, args.exam, args.date, transcript), encoding="utf-8")
+            print(f"Wrote {args.out}")
         else:
             checks = read_json(args.checks) if args.checks else {}
             render_pdf(store, args.exam, args.out, checks)

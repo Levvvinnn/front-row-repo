@@ -166,6 +166,35 @@ class CallTest(unittest.TestCase):
         self.assertIn("No direct hints", frontrow.call_script(store, "final", None))
 
 
+class ExportTest(unittest.TestCase):
+    def test_sample_export(self):
+        with tempfile.TemporaryDirectory() as folder:
+            out = Path(folder, "notes.md")
+            code, _ = run("export", "--sample", "--exam", "Midterm", "--out", str(out))
+            text = out.read_text()
+        self.assertEqual(code, 0)
+        self.assertTrue(text.startswith("# BIO 181 (sample): Front Row lecture notes"))
+        for part in ("## How to use this file", "## Direct", "### Fermentation regenerates NAD+",
+                     "- Only said in lecture", "## Said NOT on the exam", "## Transcript", "for the Midterm"):
+            self.assertIn(part, text)
+        self.assertLess(text.index("## Direct"), text.index("## Strong"))
+
+    def test_date_filter_and_by_lecture(self):
+        store = {"course": "CSE 310", "hints": []}
+        frontrow.add_hints(store, [{"concept": "Heapify trace", "rank": "direct", "quote": "on the midterm"}], "2026-10-14")
+        frontrow.add_hints(store, [{"concept": "Dijkstra table", "rank": "direct"}], "2026-10-21")
+        both = frontrow.export_markdown(store, None, None, None)
+        self.assertIn("## By lecture", both)
+        self.assertIn("2 lectures (2026-10-14 to 2026-10-21)", both)
+        self.assertNotIn("## Transcript", both)
+        one = frontrow.export_markdown(store, None, "2026-10-21", "the transcript")
+        self.assertIn("Dijkstra table", one)
+        self.assertNotIn("Heapify trace", one)
+        self.assertIn("the transcript", one)
+        with self.assertRaises(SystemExit):
+            frontrow.export_markdown(store, None, "2026-01-01", None)
+
+
 @unittest.skipUnless(importlib.util.find_spec("reportlab"), "reportlab not installed")
 class PdfTest(unittest.TestCase):
     def test_sample_pdf_is_one_page(self):

@@ -1,6 +1,6 @@
 ---
 name: front-row
-description: Catches every moment a professor hints at what's on the exam in the student's lecture recordings, matches each hint to the Canvas slides, and sends the list before the exam. Use when the student sends a lecture recording, voice memo, video or transcript, asks what will be on an exam, or asks for their Front Row list for a class.
+description: Catches every moment a professor hints at what's on the exam in the student's lecture recordings, matches each hint to the Canvas slides, and sends the list before the exam. Use when the student sends a lecture recording, voice memo, video or transcript, asks what will be on an exam, asks for their Front Row list for a class, or wants their lecture notes as a Markdown file for an AI model.
 ---
 
 # Front Row
@@ -45,6 +45,7 @@ Hints go in and out as a JSON list, one object per hint:
 - "What's going to be on the CHEM midterm?"
 - "Send me my Front Row list for MAT 265"
 - "Start Front Row for my classes"
+- "Export my CSE 310 notes for ChatGPT"
 
 Do not use it for general studying, summarizing notes from photos, or making a study plan.
 
@@ -153,6 +154,25 @@ an exam that has already passed.
 
 If the exam date changes on Canvas, update the saved date and move the check-ins and the call, and tell the
 student in one line.
+
+## 5. Export for an AI model
+
+When the student asks for their notes as a file to keep or to paste into ChatGPT, Claude, Gemini or another AI
+("download my CSE 310 notes", "give me a markdown file", "export this for ChatGPT"), make a Markdown file:
+
+- Whole class: `frontrow export --course "<class>" --exam "<next exam>" --out ~/.cache/front-row/<class>-notes.md`
+- One lecture, right after it arrives: add `--date <lecture date>`, and add `--transcript <file>` if the
+  transcript file from that lecture is still in `~/.cache/front-row/`. Transcripts aren't saved long term, so a
+  later export has the hints but not the transcript; say so in one line if they ask for it.
+
+Send the file with one line: "Here's your CSE 310 file. Drop it into any AI and ask it to quiz you."
+Without the script, make the same Markdown file with Cubbie's documents ability: a short header, a "How to use
+this file" list of prompts to try, a key to the labels, the hints grouped Direct, Strong, Repeated (each with the
+date, minute, quote and where it stands: in the slides with the link, Only said in lecture, or not checked), and
+a "Said NOT on the exam" section.
+
+After the first lecture of a class, mention once that this exists: "Tip: say 'export' anytime to get these as a
+file for ChatGPT or Claude."
 
 ## Replies
 

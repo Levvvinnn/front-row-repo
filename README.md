@@ -27,6 +27,7 @@ https://github.com/Levvvinnn/front-row-repo/tree/main/front-row
    You can also share the audio file itself.
 3. Get that lecture's hints. A week before the exam, get the whole list as a PDF.
 4. On exam morning, Cubbie can call you and read your top hints out loud (only if you say yes).
+5. Say "export" anytime to get your notes as a Markdown file you can drop into any AI model and get quizzed.
 
 ```text
 BIO 181 today: 3 hints
@@ -72,6 +73,7 @@ more consistent. Cubbie runs it in your private sandbox. It never touches the ne
 | `save` / `list` | Keeps each class's running list on disk, merging a concept mentioned across several lectures |
 | `pdf` | Draws the one-page "Front Row: BIO 181 Midterm" sheet, with self-check questions |
 | `call` | Writes the 30-second script Cubbie reads on the exam-morning wake-up call |
+| `export` | Writes a Markdown file of your hints (and optionally the transcript) to save or paste into ChatGPT, Claude or Gemini |
 
 Pinned packages in [`front-row/requirements.txt`](front-row/requirements.txt): `reportlab` (the PDF), `pypdf`
 (reading slide PDFs) and `rapidfuzz` (matching terms the transcript misspelled). The script still runs without
@@ -86,6 +88,8 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # Python 3.
 .venv/bin/python scripts/frontrow.py match --sample
 .venv/bin/python scripts/frontrow.py list --sample
 .venv/bin/python scripts/frontrow.py pdf --sample --exam Midterm --out sample.pdf
+.venv/bin/python scripts/frontrow.py call --sample --exam midterm --time "10 AM"
+.venv/bin/python scripts/frontrow.py export --sample --out sample-notes.md
 ```
 
 `--sample` uses the made-up BIO 181 lecture in [`front-row/assets/`](front-row/assets) and never touches saved hints.
