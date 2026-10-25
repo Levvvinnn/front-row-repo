@@ -1,0 +1,9 @@
+[
+ {"concept": "Krebs cycle products per glucose", "rank": "direct", "minute": 12, "quote": "This will be on the midterm, I put it on every year"},
+ {"concept": "Fermentation regenerates NAD+", "rank": "direct", "minute": 41, "quote": "you need to know that fermentation regenerates NAD+"},
+ {"concept": "Total ATP yield per glucose is 30 to 32", "rank": "strong", "minute": 31, "quote": "People always get this wrong, they write 38"},
+ {"concept": "Chemiosmosis and ATP synthase", "rank": "strong", "minute": 27, "quote": "If you remember one thing from today"},
+ {"concept": "Krebs cycle location in the matrix", "rank": "strong", "minute": 18, "quote": "People always get that wrong"},
+ {"concept": "Electron transport chain", "rank": "repeated", "minute": 22, "quote": "came back to it 3 times"},
+ {"concept": "Detailed steps of fermentation", "rank": "skip", "minute": 38, "quote": "won't be on the exam"}
+]

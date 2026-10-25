@@ -1,0 +1,15 @@
+[00:00] Okay everyone, let's get started. Today we're finishing cellular respiration, so glycolysis, the Krebs cycle, and the electron transport chain.
+[02:10] Quick recap. Glycolysis happens in the cytoplasm and splits one glucose into two pyruvate. Net gain is two ATP and two NADH.
+[05:30] Now the pyruvate goes into the mitochondria and gets converted to acetyl CoA before the Krebs cycle.
+[09:45] The Krebs cycle runs twice per glucose. Each turn makes three NADH, one FADH2, and one ATP.
+[11:20] Write this down. The Krebs cycle products per glucose are six NADH, two FADH2, two ATP and four CO2.
+[12:05] This will be on the midterm, I promise you, I put it on every year.
+[18:40] The Krebs cycle also happens in the matrix, not the cytoplasm. People always get that wrong.
+[22:15] Okay, the electron transport chain. The electron transport chain sits on the inner membrane.
+[24:50] The electron transport chain pumps protons into the intermembrane space and builds a gradient.
+[27:30] ATP synthase uses that gradient. If you remember one thing from today, it's chemiosmosis.
+[31:00] Now total ATP yield per glucose. Textbooks say 36 or 38, but the real number is closer to 30 to 32. People always get this wrong, they write 38.
+[34:10] The electron transport chain is the reason oxygen matters, oxygen is the final electron acceptor.
+[38:00] Fermentation, you don't need to memorize the steps. The detailed steps of fermentation won't be on the exam.
+[41:30] But you need to know that fermentation regenerates NAD+ so glycolysis can keep going.
+[44:00] Alright, that's it for today, see you Thursday.
