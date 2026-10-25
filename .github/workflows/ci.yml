@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deps: ["stdlib only", "with packages"]
+    name: tests (${{ matrix.deps }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12" # what Cubbie's sandbox runs
+      - name: Install pinned packages
+        if: matrix.deps == 'with packages'
+        run: pip install -r front-row/requirements.txt
+      - name: Unit tests
+        run: python -m unittest discover -v tests
+      - name: Sample run
+        working-directory: front-row
+        run: |
+          python scripts/frontrow.py scan --sample
+          python scripts/frontrow.py match --sample
+          python scripts/frontrow.py list --sample --short
+
+  skill:
+    runs-on: ubuntu-latest
+    name: SKILL.md format
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml==6.0.2
+      - name: Check frontmatter against the Agent Skills rules
+        run: |
+          python - <<'EOF'
+          import re, sys, yaml
+          text = open("front-row/SKILL.md", encoding="utf-8").read()
+          meta = yaml.safe_load(re.match(r"\A---\n(.*?)\n---\n", text, re.S).group(1))
+          problems = []
+          if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", meta.get("name", "")) or len(meta["name"]) > 64:
+              problems.append("name must be lowercase letters, digits and single hyphens, at most 64 chars")
+          description = meta.get("description", "")
+          if not description or len(description) > 1024:
+              problems.append("description must be 1 to 1024 characters")
+          if len(re.split(r"(?<=[.!?])\s+", description, maxsplit=1)[0]) > 200:
+              problems.append("description's first sentence is over 200 characters (Cubbie's list cuts it)")
+          extra = set(meta) - {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
+          if extra:
+              problems.append(f"non-standard frontmatter fields: {sorted(extra)}")
+          if len(text.splitlines()) > 500:
+              problems.append("SKILL.md is over 500 lines")
+          print("\n".join(problems) or f"ok: {meta['name']}, {len(text.splitlines())} lines")
+          sys.exit(1 if problems else 0)
+          EOF
