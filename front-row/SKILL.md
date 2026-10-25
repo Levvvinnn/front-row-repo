@@ -136,7 +136,23 @@ hint give the concept, what the professor said, the lecture date, and where it s
 said in lecture", or "not checked against the slides"; end with a short "Said NOT on the exam" section if there
 are skips, and add the self-check questions. Send the PDF with a one-line summary.
 
-If the exam date changes on Canvas, update the saved date and move the check-ins, and tell the student in one line.
+### Exam-morning wake-up call
+
+After the student says yes to the check-ins, offer one more: "Want me to call you the morning of the exam with
+your top hints? I'd call 90 minutes before it starts." Let them pick the time. Create it only after a yes, as a
+phone call, not a text.
+
+Word it so it makes sense on its own later: "Front Row wake-up call for <class> <exam name> at <exam time> on
+<date>: run the front-row Skill's `frontrow call --course "<class>" --exam "<exam name>" --time "<exam time>"`
+and say what it prints on the call. If the script can't run, say the class, the exam time, up to 3 Direct hints
+and up to 2 Only said in lecture hints from memory, in under 30 seconds."
+
+On the call, speak plainly: no links, no symbols, no list markers. If the student doesn't pick up, send the same
+words as one text instead. Never call before 6 am or after 10 pm in the student's time zone, and never call about
+an exam that has already passed.
+
+If the exam date changes on Canvas, update the saved date and move the check-ins and the call, and tell the
+student in one line.
 
 ## Replies
 

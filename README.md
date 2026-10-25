@@ -26,6 +26,7 @@ https://github.com/Levvvinnn/front-row-repo/tree/main/front-row
 2. After class, open the memo, copy its transcript and send it to Cubbie. This is the fastest way.
    You can also share the audio file itself.
 3. Get that lecture's hints. A week before the exam, get the whole list as a PDF.
+4. On exam morning, Cubbie can call you and read your top hints out loud (only if you say yes).
 
 ```text
 BIO 181 today: 3 hints
@@ -49,6 +50,7 @@ flowchart LR
     D & E & F --> G[(Running list<br/>per class)]
     G --> H[7 days before: full PDF]
     G --> I[Night before: direct + only-in-lecture]
+    G --> J[Exam morning: wake-up phone call]
 ```
 
 **Only said in lecture** is the label that matters most, because classmates who only read the slides miss those
@@ -69,6 +71,7 @@ more consistent. Cubbie runs it in your private sandbox. It never touches the ne
 | `match` | Checks each hint against the downloaded slide decks and pages (PDF, HTML, text) and gives it a status |
 | `save` / `list` | Keeps each class's running list on disk, merging a concept mentioned across several lectures |
 | `pdf` | Draws the one-page "Front Row: BIO 181 Midterm" sheet, with self-check questions |
+| `call` | Writes the 30-second script Cubbie reads on the exam-morning wake-up call |
 
 Pinned packages in [`front-row/requirements.txt`](front-row/requirements.txt): `reportlab` (the PDF), `pypdf`
 (reading slide PDFs) and `rapidfuzz` (matching terms the transcript misspelled). The script still runs without

@@ -12,6 +12,7 @@ Commands:
   save   --course C --date YYYY-MM-DD --hints FILE
   list   --course C [--short] [--json]           the running list (--short: night-before list)
   pdf    --course C --exam NAME --out FILE [--checks FILE]
+  call   --course C --exam NAME [--time "10 AM"] what to say on the exam-morning wake-up call
   courses                                        classes with saved hints
 
 Every command takes --sample, which uses the bundled files under assets/ and leaves saved hints alone.
@@ -464,6 +465,45 @@ def render_pdf(store: dict, exam: str, out: Path, checks: dict) -> None:
     canvas.save()
 
 
+# ---------------------------------------------------------------- call
+
+
+def speakable(text: str) -> str:
+    """Read-aloud form: no links or symbols a voice would trip on ("O(n)" becomes "O of n")."""
+    text = re.sub(r"https?://\S+", "", text)
+    text = re.sub(r"\bO\(([^)]*)\)", r"O of \1", text)
+    text = text.replace("+", " plus ").replace("&", " and ").replace("/", " or ")
+    return re.sub(r"\s+", " ", re.sub(r"[()\[\]{}*_#`\"]", "", text)).strip()
+
+
+def spoken_list(items: list[str]) -> str:
+    if len(items) < 3:
+        return " and ".join(items)
+    return ", ".join(items[:-1]) + ", and " + items[-1]
+
+
+def call_script(store: dict, exam: str, time: str | None) -> str:
+    """What Cubbie says on the exam-morning call: about 30 seconds, the Direct hints first."""
+    groups = grouped(store)
+    direct = [speakable(g["concept"]) for g in groups if g["rank"] == "direct"][:3]
+    only = [speakable(g["concept"]) for g in groups if g["status"] == "only_lecture" and g["rank"] in ("strong", "repeated")][:2]
+    skips = [speakable(g["concept"]) for g in groups if g["rank"] == "skip"][:1]
+    course = speakable(store["course"])
+    parts = [f"Good morning. This is your Front Row wake-up call for {course}.",
+             f"Your {exam} is {f'at {time}' if time else 'today'}."]
+    if direct:
+        count = {1: "one thing", 2: "two things", 3: "three things"}[len(direct)]
+        parts.append(f"Your professor said {count} straight out: {spoken_list(direct)}.")
+    if only:
+        parts.append(f"Only said in lecture, not in the slides: {spoken_list(only)}.")
+    if skips:
+        parts.append(f"And remember, {skips[0]} is not on the exam.")
+    if not (direct or only):
+        parts.append("No direct hints were saved for this class, so trust your studying.")
+    parts.append("Your full list is in your texts. You've got this.")
+    return " ".join(parts)
+
+
 # ---------------------------------------------------------------- main
 
 
@@ -506,6 +546,12 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--exam", default="Exam")
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--checks", type=Path, help='JSON {"concept": "self-check question"} for direct hints')
+    p.add_argument("--sample", action="store_true")
+
+    p = sub.add_parser("call", help="what to say on the exam-morning wake-up call")
+    p.add_argument("--course")
+    p.add_argument("--exam", default="exam")
+    p.add_argument("--time", help='exam start time as the student would say it, for example "10 AM"')
     p.add_argument("--sample", action="store_true")
 
     sub.add_parser("courses", help="classes with saved hints")
@@ -552,7 +598,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Saved {added} new and {replaced} updated hint(s) for {store['course']} ({args.date}). "
               f"{len(store['hints'])} saved in all.")
 
-    elif args.command in {"list", "pdf"}:
+    elif args.command in {"list", "pdf", "call"}:
         if args.sample:
             store = sample_store()
         else:
@@ -563,6 +609,8 @@ def main(argv: list[str] | None = None) -> int:
                 fail(f"No hints saved for {args.course} yet.", 3)
         if args.command == "list":
             emit(json.dumps(grouped(store), indent=1, ensure_ascii=False) if args.json else format_list(store, args.short))
+        elif args.command == "call":
+            print(call_script(store, args.exam, args.time))
         else:
             checks = read_json(args.checks) if args.checks else {}
             render_pdf(store, args.exam, args.out, checks)

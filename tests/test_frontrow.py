@@ -146,6 +146,26 @@ class StoreTest(unittest.TestCase):
         self.assertEqual(list(Path(self.tmp.name).glob("*.json")), [])
 
 
+class CallTest(unittest.TestCase):
+    def test_sample_call_reads_direct_hints_and_skip(self):
+        code, out = run("call", "--sample", "--exam", "midterm", "--time", "10 AM")
+        self.assertEqual(code, 0)
+        self.assertIn("Your midterm is at 10 AM.", out)
+        self.assertIn("Krebs cycle products per glucose", out)
+        self.assertIn("not on the exam", out)
+        self.assertNotRegex(out, r"https?://|[()\[\]*#]")
+
+    def test_speakable(self):
+        self.assertEqual(frontrow.speakable("Build heap is O(n)"), "Build heap is O of n")
+        self.assertEqual(frontrow.speakable("NAD+ see https://canvas.x/1"), "NAD plus see")
+        self.assertEqual(frontrow.spoken_list(["a", "b"]), "a and b")
+        self.assertEqual(frontrow.spoken_list(["a", "b", "c"]), "a, b, and c")
+
+    def test_no_direct_hints(self):
+        store = {"course": "X", "hints": [{"concept": "Y", "rank": "strong", "status": "slides", "date": "2026-10-21"}]}
+        self.assertIn("No direct hints", frontrow.call_script(store, "final", None))
+
+
 @unittest.skipUnless(importlib.util.find_spec("reportlab"), "reportlab not installed")
 class PdfTest(unittest.TestCase):
     def test_sample_pdf_is_one_page(self):
