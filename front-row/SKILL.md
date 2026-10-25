@@ -90,8 +90,8 @@ Word each check-in so it makes sense on its own later: "Front Row check-in for <
 send the <full list / night-before short list>."
 
 For the full list, make a one-page PDF titled "Front Row: <class> <exam>". Group hints by topic, 🔥 first, then
-⚠️, then 👀. For each hint: the concept, what the professor said, the lecture date, and the Canvas link or "Only
-said in lecture". End with a short "Said NOT on the exam" section if there are skips. Add one quick self-check
+⚠️, then 👀. For each hint: the concept, what the professor said, the lecture date, and where it stands: the Canvas
+link, "Only said in lecture", or "not checked against the slides". End with a short "Said NOT on the exam" section if there are skips. Add one quick self-check
 question for each 🔥 hint. Send the PDF with a one-line summary.
 
 If the exam date changes on Canvas, update the saved date and move the check-ins, and tell the student in one line.
@@ -140,6 +140,7 @@ You got this 🍀
   transcript, or split it into 2 parts?"
 - No hints found: say so honestly, and name the concept the professor spent the most time on.
 - Can't tell which class: ask once, with the most likely class as the default.
-- Canvas not connected: still find hints; skip slide matching and ask the student for the exam date.
+- Canvas not connected: still find hints, but skip slide matching and save every hint as not checked, never
+  Only said in lecture. Ask the student for the exam date.
 - No exam date found: ask "When's the next exam in BIO 181?" and save it.
 - Poor audio: say which part was hard to hear, and suggest putting the phone on the desk next time.
