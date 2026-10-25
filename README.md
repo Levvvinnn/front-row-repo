@@ -1,4 +1,4 @@
-# Front Row 🎟️
+# Front Row 
 
 A Cubbie Skill for the Cubbie Hackathon (Track 1).
 
