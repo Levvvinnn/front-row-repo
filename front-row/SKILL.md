@@ -41,8 +41,9 @@ can accept with "yes".
 
 1. **Which class?** Match the time the recording was made or sent to the class schedule. If one class fits,
    say which one you assumed ("Got it, BIO 181 from today"). If unsure, ask: "Which class is this? BIO 181?"
-2. **Transcribe it** with Cubbie's ability to transcribe voice notes and videos. If the student sent a text
-   transcript (for example from the iPhone Voice Memos transcript), use that instead.
+2. **Get the transcript.** If the student sent text (for example the iPhone Voice Memos transcript), use it as
+   is; this is the fastest path. Otherwise transcribe the audio or video with Cubbie's ability to transcribe
+   voice notes and videos.
    If the recording is too long or transcription fails, ask the student to send the Voice Memos transcript
    as text, or split the recording into 2 or 3 parts. Don't stop at the first failure without offering one of these.
 3. **Find the hints.** Read the whole transcript and find moments where the professor signals exam content.
@@ -57,8 +58,15 @@ can accept with "yes".
 4. For each hint, keep: the concept in a few plain words, its rank, roughly where in the recording it was
    (minutes in), and a short line of what the professor said (under 15 words).
 5. **Match to Canvas.** Search the course materials on Canvas for each concept and find the slide deck, page or
-   file that covers it. Save the link. If nothing on Canvas covers it, mark it **Only said in lecture**. These
-   are the most valuable hints, because classmates who only read the slides will miss them.
+   file that covers it. Save the link. **Only said in lecture** is the most valuable label, because classmates
+   who only read the slides will miss these, so it must be earned:
+   - Use it only after actually opening and searching that class's slides and pages, and note which ones were
+     searched ("searched Lecture 7 and 8 slides").
+   - If the course materials couldn't be opened, or the match is unclear, say **not checked** instead. Never
+     use Only said in lecture as the default.
+   - If more than about a third of a lecture's hints come out unclear, drop the label for that whole lecture and
+     tell the student in one line why ("Couldn't search the slides well this time, so no only-in-lecture flags").
+   A missing flag is fine. A wrong flag ruins trust in all of them.
 6. Save each hint to memory under the class, with the lecture date. Don't save the full transcript to memory.
    Offer the full transcript as a document if the student wants it.
 
@@ -87,11 +95,6 @@ said in lecture". End with a short "Said NOT on the exam" section if there are s
 question for each 🔥 hint. Send the PDF with a one-line summary.
 
 If the exam date changes on Canvas, update the saved date and move the check-ins, and tell the student in one line.
-
-## 5. After the exam (optional)
-
-The day after an exam, ask once: "How many hints showed up on the exam? 🎯" Save the answer. It helps the student
-see which kinds of hints this professor really means, and it's great to share.
 
 ## Replies
 
